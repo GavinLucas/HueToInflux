@@ -19,7 +19,7 @@ def get_data_from_bridge():
     :rtype: dict
     """
     try:
-        hue_data = Bridge(ip=settings['hue']['host'], username=settings['hue']['user'])
+        hue_data = Bridge(ip=settings["hue"]["host"], username=settings["hue"]["user"])
         hue_data.connect()
         assert hue_data.get_api()  # just to check if connection was successful
     except Exception as e:
@@ -49,7 +49,7 @@ def send_data_to_influx(data):
     try:
         response = requests.post(
             url,
-            auth=(settings['influx']['user'], settings['influx']['password']),
+            auth=(settings["influx"]["user"], settings["influx"]["password"]),
             data=data_to_send,
             timeout=5,
         )
@@ -65,18 +65,18 @@ def main():
     # main loop to collect and send data to InfluxDB
     next_update = time.time()
     while True:
-        next_update += settings['interval']
+        next_update += settings["interval"]
         data = {}
         hue_data = get_data_from_bridge()
 
         # parse the data
         for device in hue_data:
-            if hue_data[device]['type'] == "ZLLTemperature":
-                name = settings['sensors'].get(hue_data[device]['name'])
-                data[name] = round(hue_data[device]['state']['temperature'] / 100, 2)
-            elif hue_data[device]['type'] == "ZLLLightLevel":
-                name = settings['sensors'].get(hue_data[device]['name'])
-                data[name] = round(float(10 ** ((hue_data[device]['state']['lightlevel'] - 1) / 10000)), 2)
+            if hue_data[device]["type"] == "ZLLTemperature":
+                name = settings["sensors"].get(hue_data[device]["name"])
+                data[name] = round(hue_data[device]["state"]["temperature"] / 100, 2)
+            elif hue_data[device]["type"] == "ZLLLightLevel":
+                name = settings["sensors"].get(hue_data[device]["name"])
+                data[name] = round(float(10 ** ((hue_data[device]["state"]["lightlevel"] - 1) / 10000)), 2)
 
         # send the data
         send_data_to_influx(data)
