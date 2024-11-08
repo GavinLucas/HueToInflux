@@ -10,5 +10,5 @@
     "user": "your_influx_user",
     "password": "your_influx_password"
   },
-  "interval": 10
+  "interval": 300
 }
