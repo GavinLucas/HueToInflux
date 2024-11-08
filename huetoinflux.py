@@ -10,19 +10,6 @@ from phue import Bridge
 with open("settings.json") as f:
     settings = json.load(f)
 
-SENSORS = {
-    "Hue ambient light sensor 1": "Kitchen_Light_Sensor",
-    "Hue ambient light sensor 2": "Hall_Light_Sensor",
-    "Hue ambient light sensor 3": "Landing_Light-Sensor",
-    "Hue ambient light sensor 4": "Toilet_Light_Sensor",
-    "Hue ambient light sensor 5": "Conservatory_Light_Sensor",
-    "Hue temperature sensor 1": "Kitchen_Temperature_Sensor",
-    "Hue temperature sensor 2": "Hall_Temperature_Sensor",
-    "Hue temperature sensor 3": "Landing_Temperature_Sensor",
-    "Hue temperature sensor 4": "Toilet_Temperature_Sensor",
-    "Hue temperature sensor 5": "Conservatory_Temperature_Sensor",
-}
-
 
 def get_data_from_bridge():
     """
@@ -40,20 +27,6 @@ def get_data_from_bridge():
     return hue_data.get_sensor()
 
 
-def sensor_name_to_name(sensor_name):
-    """
-    Convert the sensor name to a more human-readable name
-
-    :param sensor_name: The name of the sensor
-    :type sensor_name: str
-
-    :return: name
-    :rtype: str
-    """
-    name = SENSORS.get(sensor_name)
-    return name
-
-
 def send_data_to_influx(data):
     """Parses and sends a line of iostat data to influxDB
 
@@ -62,8 +35,10 @@ def send_data_to_influx(data):
 
     :return: None
     """
-    # format the data to senddata_to_send = f"hue,host={IP} {data}"
-    # print(" ^", end="\r")  # minimalist activity indicator
+
+    print(" ^", end="\r")  # minimalist activity indicator
+
+    # format the data to send
     data_to_send = f"hue,host={settings["hue"]["host"]} " + ",".join([f"{key}={value}" for key, value in data.items()])
 
     # send to InfluxDB
@@ -87,18 +62,23 @@ def send_data_to_influx(data):
 def main():
     """The main function"""
 
+    # main loop to collect and send data to InfluxDB
     next_update = time.time()
     while True:
-        next_update = next_update + settings["interval"]
+        next_update += settings["interval"]
         data = {}
         hue_data = get_data_from_bridge()
+
+        # parse the data
         for device in hue_data:
             if hue_data[device]["type"] == "ZLLTemperature":
-                name = sensor_name_to_name(hue_data[device]["name"])
+                name = settings["sensors"].get(hue_data[device]["name"])
                 data[name] = round(hue_data[device]["state"]["temperature"] / 100, 2)
             elif hue_data[device]["type"] == "ZLLLightLevel":
-                name = sensor_name_to_name(hue_data[device]["name"])
+                name = settings["sensors"].get(hue_data[device]["name"])
                 data[name] = round(float(10 ** ((hue_data[device]["state"]["lightlevel"] - 1) / 10000)), 2)
+
+        # send the data
         send_data_to_influx(data)
 
         # Sleep until the next interval

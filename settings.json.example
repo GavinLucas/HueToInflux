@@ -10,5 +10,11 @@
     "user": "your_influx_user",
     "password": "your_influx_password"
   },
-  "interval": 300
+  "interval": 300,
+  "sensors": {
+    "Hue ambient light sensor 1": "Room1_Light_Sensor",
+    "Hue ambient light sensor 2": "Room2_Light_Sensor",
+    "Hue temperature sensor 1": "Room1_Temperature_Sensor",
+    "Hue temperature sensor 2": "Room2_Temperature_Sensor",
+  }
 }
