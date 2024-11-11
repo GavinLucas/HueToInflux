@@ -2,12 +2,12 @@
 """ Script to run iostat and send output to InfluxDB """
 
 import time
-import requests
 import json
+import requests
 from phue import Bridge
 
 # load the settings.json file
-with open("settings.json") as f:
+with open("settings.json", encoding="utf8") as f:
     settings = json.load(f)
 
 
