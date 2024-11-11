@@ -1,14 +1,14 @@
 {
   "hue": {
-    "host": "huehub.example.com",
+    "host": "hue.example.com",
     "user": "your_hue_user"
   },
   "influx": {
-    "host": "influxhost.example.com",
-    "port": "8086",
+    "url": "https://influx.example.com:8086",
     "db": "hue_db",
     "user": "your_influx_user",
-    "password": "your_influx_password"
+    "password": "your_influx_password",
+    "timeout": 5
   },
   "interval": 300,
   "sensors": {
