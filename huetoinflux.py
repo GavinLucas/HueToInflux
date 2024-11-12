@@ -91,11 +91,11 @@ def parse_data():
         elif device["type"] == "ZLLLightLevel":
             data[name] = round(float(10 ** ((device["state"]["lightlevel"] - 1) / 10000)), 2)
         elif device["type"] == "ZLLPresence":
-            data[name] = 254 if device["state"]["presence"] else 0
+            data[name] = int(1 if device["state"]["presence"] else 0)
 
     for device in hue_data["lights"].values():
         name = device_name_to_name(device["name"])
-        data[name] = device["state"].get("bri", 254) if device["state"]["on"] else 0
+        data[name] = int(device["state"].get("bri", 2.54) / 2.54) if device["state"]["on"] else 0
 
     return data
 
