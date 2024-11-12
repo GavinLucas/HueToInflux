@@ -65,10 +65,6 @@ def device_name_to_name(device_name):
     :return: name
     :rtype: str
     """
-    # if "sensors" in settings and settings["sensors"].get(device_name):
-    #    name = settings["sensors"].get(device_name)
-    # else:
-    #    name = device_name
     name = settings["sensors"].get(device_name, device_name) if "sensors" in settings else device_name
     return name.replace(" ", "_")
 
@@ -87,14 +83,25 @@ def parse_data():
     for device in hue_data["sensors"].values():
         name = device_name_to_name(device["name"])
         if device["type"] == "ZLLTemperature":
-            data[name] = round(device["state"]["temperature"] / 100, 2)
+            # convert temperature to the desired units
+            celsius = device["state"]["temperature"] / 100
+            if settings.get("temperature_units") == "F":
+                data[name] = round((celsius * 1.8) + 32, 2)
+            elif settings.get("temperature_units") == "K":
+                data[name] = round(celsius + 273.15, 2)
+            else:
+                data[name] = round(celsius, 2)
         elif device["type"] == "ZLLLightLevel":
+            # convert light level to lux
             data[name] = round(float(10 ** ((device["state"]["lightlevel"] - 1) / 10000)), 2)
         elif device["type"] == "ZLLPresence":
+            # convert presence to boolean 0 or 1
             data[name] = int(1 if device["state"]["presence"] else 0)
 
     for device in hue_data["lights"].values():
         name = device_name_to_name(device["name"])
+        # convert brightness to percentage if the light is dimmable (has a "bri" attribute)
+        # otherwise boolean 0 or 1 to cover smart plugs which are also listed as lights
         data[name] = int(device["state"].get("bri", 2.54) / 2.54) if device["state"]["on"] else 0
 
     return data
