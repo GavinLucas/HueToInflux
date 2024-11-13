@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" Script to run iostat and send output to InfluxDB """
+""" Script to get data from a Hue Bridge and send it to InfluxDB """
 
 import sys
 import time
@@ -17,6 +17,9 @@ try:
 except FileNotFoundError:
     print("settings.json not found.")
     print("Make sure you copy settings.json.example to settings.json and edit it.")
+    sys.exit(1)
+except json.decoder.JSONDecodeError as e:
+    print(f"Error in settings.json - {e}")
     sys.exit(1)
 
 
