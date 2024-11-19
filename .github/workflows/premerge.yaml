@@ -26,5 +26,6 @@ jobs:
         uses: py-actions/flake8@v2
         with:
           max-line-length: "120"
+          ignore: "E203"
           exclude: .git,__pycache__,venv
           plugins: "flake8-bugbear flake8-black"
