@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" Script to get data from a Hue Bridge and send it to InfluxDB """
+"""Script to get data from a Hue Bridge and send it to InfluxDB"""
 
 import sys
 import time
