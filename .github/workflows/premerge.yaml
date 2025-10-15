@@ -1,7 +1,6 @@
 name: 'Check inbound changes'
 permissions:
   contents: read
-  pull-requests: write
 
 # Triggers
 on: [push, workflow_dispatch]
