@@ -3,7 +3,7 @@ permissions:
   contents: read
 
 # Triggers
-on: [push, workflow_dispatch]
+on: [push, pull_request, workflow_dispatch]
 
 # Jobs
 jobs:
