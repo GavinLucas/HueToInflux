@@ -1,7 +1,7 @@
 {
   "hue": {
     "host": "hue.example.com",
-    "user": "your_hue_user"
+    "user": "your_hue_user",
     "timeout": 5
   },
   "influx": {
