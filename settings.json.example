@@ -2,6 +2,7 @@
   "hue": {
     "host": "hue.example.com",
     "user": "your_hue_user"
+    "timeout": 5
   },
   "influx": {
     "url": "https://influx.example.com:8086",
