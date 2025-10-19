@@ -5,10 +5,8 @@ import sys
 import time
 import json
 import signal
-import socket
 import argparse
 import requests
-import phue
 
 # load the settings.json file
 try:
@@ -44,10 +42,13 @@ def get_data_from_bridge():
     :rtype: dict
     """
     try:
-        hue = phue.Bridge(ip=settings["hue"]["host"], username=settings["hue"]["user"])
-        hue.connect()
-        hue_data = hue.get_api()
-    except (socket.gaierror, ConnectionRefusedError, phue.PhueRequestTimeout) as e:
+        response = requests.get(
+            f"https://{settings['hue']['host']}/api/{settings['hue']['user']}",
+            timeout=settings["hue"].get("timeout", 5),
+            verify=False,
+        )
+        hue_data = response.json()
+    except requests.exceptions.RequestException as e:
         print(f"Error connecting to Hue Bridge - {e}")
         sys.exit(2)
     if isinstance(hue_data, list) and "error" in hue_data[0]:
