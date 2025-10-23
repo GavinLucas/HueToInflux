@@ -1,6 +1,10 @@
 HueToInflux
 ===========
 
+[DEPRECATED] - See https://github.com/GavinLucas/send-to-influx instead
+
+Moving development into a new repo that abstracts the data collection and therefore combines the functionality of several independent repos, this one included.
+
 https://github.com/GavinLucas/HueToInflux
 -----------------------------------------
 
